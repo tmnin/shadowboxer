@@ -169,11 +169,21 @@
 
         .stop-btn {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .stop-btn {
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                width: calc(100% - 2rem);
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -341,7 +351,6 @@
             }
 
             startSetup() {
-                // Get selected commands
                 const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
                 this.selectedCommands = Array.from(checkboxes).map(cb => cb.value);
 
@@ -350,7 +359,6 @@
                     return;
                 }
 
-                // Get settings
                 this.interval = parseInt(document.getElementById('interval').value) * 1000;
                 this.countdownTime = parseInt(document.getElementById('countdown').value);
                 this.totalCommands = document.getElementById('totalCommands').value ? 
@@ -383,13 +391,11 @@
                 this.startTime = Date.now();
                 this.currentCommand = 0;
                 
-                // Start the training loop
                 this.executeCommand();
                 this.trainingInterval = setInterval(() => {
                     this.executeCommand();
                 }, this.interval);
 
-                // Start the timer display
                 this.updateTimer();
                 this.timerInterval = setInterval(() => {
                     this.updateTimer();
@@ -471,8 +477,6 @@
                 document.getElementById(pageId).classList.remove('hidden');
             }
         }
-
-        // Initialize the app
         const app = new Shadowboxer();
     </script>
 </body>

@@ -19,6 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         .container {
@@ -28,8 +29,8 @@
             padding: 2rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            max-width: 500px;
-            width: 90%;
+            max-width: 600px;
+            width: 100%;
             text-align: center;
         }
 
@@ -40,6 +41,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ffd93d;
         }
 
         .subtitle {
@@ -57,9 +64,10 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
+            color: #ffd93d;
         }
 
-        select, input {
+        select, input[type="number"] {
             width: 100%;
             padding: 0.8rem;
             border: none;
@@ -67,6 +75,13 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #ffd93d;
+            box-shadow: 0 0 0 2px rgba(255, 217, 61, 0.3);
         }
 
         select option {
@@ -80,20 +95,33 @@
 
         .checkbox-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
             margin-top: 0.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            padding: 0.3rem;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            color: white;
+            cursor: pointer;
+            font-weight: normal;
         }
 
         input[type="checkbox"] {
-            width: auto;
-            transform: scale(1.2);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #ff6b6b;
         }
 
         .btn {
@@ -124,6 +152,7 @@
             font-weight: bold;
             margin: 2rem 0;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            color: #ffd93d;
         }
 
         .command-display {
@@ -135,6 +164,7 @@
             border-radius: 15px;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             animation: pulse 0.5s ease-in-out;
+            color: white;
         }
 
         @keyframes pulse {
@@ -163,17 +193,41 @@
             color: #ffd93d;
         }
 
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
+        }
+
         .hidden {
             display: none;
         }
 
         .stop-btn {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 0.5rem;
+            }
+            
+            .countdown-display {
+                font-size: 6rem;
+            }
+            
+            .command-display {
+                font-size: 3rem;
+            }
         }
     </style>
 </head>
@@ -279,11 +333,11 @@
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-number" id="commandCount">0</div>
-                <div>Commands</div>
+                <div class="stat-label">Commands</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="timeElapsed">0:00</div>
-                <div>Time</div>
+                <div class="stat-label">Time</div>
             </div>
         </div>
         <button id="stopBtn" class="btn stop-btn">STOP TRAINING</button>
@@ -295,15 +349,15 @@
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-number" id="finalCommands">0</div>
-                <div>Total Commands</div>
+                <div class="stat-label">Total Commands</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="finalTime">0:00</div>
-                <div>Training Time</div>
+                <div class="stat-label">Training Time</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="avgInterval">0.0s</div>
-                <div>Avg Interval</div>
+                <div class="stat-label">Avg Interval</div>
             </div>
         </div>
         <button id="homeBtn" class="btn">BACK TO HOME</button>
@@ -320,6 +374,7 @@
                 this.startTime = null;
                 this.trainingInterval = null;
                 this.countdownInterval = null;
+                this.timerInterval = null;
                 this.speechSupported = 'speechSynthesis' in window;
                 
                 this.initEventListeners();
@@ -341,7 +396,6 @@
             }
 
             startSetup() {
-                // Get selected commands
                 const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
                 this.selectedCommands = Array.from(checkboxes).map(cb => cb.value);
 
@@ -350,7 +404,6 @@
                     return;
                 }
 
-                // Get settings
                 this.interval = parseInt(document.getElementById('interval').value) * 1000;
                 this.countdownTime = parseInt(document.getElementById('countdown').value);
                 this.totalCommands = document.getElementById('totalCommands').value ? 
@@ -383,13 +436,11 @@
                 this.startTime = Date.now();
                 this.currentCommand = 0;
                 
-                // Start the training loop
                 this.executeCommand();
                 this.trainingInterval = setInterval(() => {
                     this.executeCommand();
                 }, this.interval);
 
-                // Start the timer display
                 this.updateTimer();
                 this.timerInterval = setInterval(() => {
                     this.updateTimer();
@@ -472,7 +523,6 @@
             }
         }
 
-        // Initialize the app
         const app = new Shadowboxer();
     </script>
 </body>

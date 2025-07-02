@@ -204,30 +204,11 @@
 
         .stop-btn {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .checkbox-group {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 0.5rem;
-            }
-            
-            .countdown-display {
-                font-size: 6rem;
-            }
-            
-            .command-display {
-                font-size: 3rem;
-            }
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
         }
     </style>
 </head>
@@ -289,17 +270,25 @@
                         <input type="checkbox" id="guard" value="guard">
                         <label for="guard">Guard</label>
                     </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="catch" value="catch">
+                        <label for="catch">Catch</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="filler" value="filler">
+                        <label for="filler">filler</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="filler" value="filler">
+                        <label for="filler">filler</label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="interval">Command Interval (seconds):</label>
                 <select id="interval">
-                    <option value="1">1 second</option>
-                    <option value="2" selected>2 seconds</option>
-                    <option value="3">3 seconds</option>
-                    <option value="4">4 seconds</option>
-                    <option value="5">5 seconds</option>
+                    <input type="number" id="totalCommands" placeholder="e.g., 50" min="1">
                 </select>
             </div>
 
@@ -523,6 +512,7 @@
             }
         }
 
+        // Initialize the app
         const app = new Shadowboxer();
     </script>
 </body>

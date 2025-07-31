@@ -20,6 +20,7 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            padding: 1rem;
         }
 
         .container {
@@ -29,6 +30,8 @@
             padding: 2rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 100%;
             max-width: 600px;
             width: 100%;
             text-align: center;
@@ -41,6 +44,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ffd93d;
         }
 
         h2 {
@@ -65,8 +74,10 @@
             margin-bottom: 0.5rem;
             font-weight: bold;
             color: #ffd93d;
+            color: #ffd93d;
         }
 
+        select, input[type="number"] {
         select, input[type="number"] {
             width: 100%;
             padding: 0.8rem;
@@ -75,6 +86,13 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #ffd93d;
+            box-shadow: 0 0 0 2px rgba(255, 217, 61, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
@@ -97,7 +115,12 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.8rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
             margin-top: 0.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
             padding: 1rem;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -115,9 +138,21 @@
             color: white;
             cursor: pointer;
             font-weight: normal;
+            padding: 0.3rem;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            color: white;
+            cursor: pointer;
+            font-weight: normal;
         }
 
         input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #ff6b6b;
             width: 18px;
             height: 18px;
             cursor: pointer;
@@ -153,6 +188,7 @@
             margin: 2rem 0;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             color: #ffd93d;
+            color: #ffd93d;
         }
 
         .command-display {
@@ -164,6 +200,7 @@
             border-radius: 15px;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             animation: pulse 0.5s ease-in-out;
+            color: white;
             color: white;
         }
 
@@ -191,6 +228,11 @@
             font-size: 2rem;
             font-weight: bold;
             color: #ffd93d;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
         }
 
         .stat-label {
@@ -334,9 +376,11 @@
             <div class="stat-card">
                 <div class="stat-number" id="commandCount">0</div>
                 <div class="stat-label">Commands</div>
+                <div class="stat-label">Commands</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="timeElapsed">0:00</div>
+                <div class="stat-label">Time</div>
                 <div class="stat-label">Time</div>
             </div>
         </div>
@@ -350,13 +394,16 @@
             <div class="stat-card">
                 <div class="stat-number" id="finalCommands">0</div>
                 <div class="stat-label">Total Commands</div>
+                <div class="stat-label">Total Commands</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="finalTime">0:00</div>
                 <div class="stat-label">Training Time</div>
+                <div class="stat-label">Training Time</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="avgInterval">0.0s</div>
+                <div class="stat-label">Avg Interval</div>
                 <div class="stat-label">Avg Interval</div>
             </div>
         </div>
@@ -374,6 +421,7 @@
                 this.startTime = null;
                 this.trainingInterval = null;
                 this.countdownInterval = null;
+                this.timerInterval = null;
                 this.timerInterval = null;
                 this.speechSupported = 'speechSynthesis' in window;
                 
@@ -526,6 +574,8 @@
                 document.getElementById(pageId).classList.remove('hidden');
             }
         }
+
+        // Initialize the app
 
         // Initialize the app
         const app = new Shadowboxer();
